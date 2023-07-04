@@ -20,7 +20,6 @@ class CreateInvoicesTable extends Migration
             $table->string('status')->default('Billed');
             $table->dateTime('issue_date');
             $table->dateTime('due_date');
-            $table->dateTime('paid_date')->nullable();
             $table->string('payment_method')->default('Cash');
             $table->string('payment_ref');
             $table->integer('user_id');

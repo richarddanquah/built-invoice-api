@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemStockController;
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ Route::group(['middleware' => ['auth:sanctum']],function() {
     Route::resource('customers', CustomerController::class);
     Route::resource('items', ItemController::class);
     Route::resource('item_stocks', ItemStockController::class);
+    Route::resource('invoices', InvoiceController::class);
     Route::post('/logout', [AuthController::class,'logout']);
 });
 
