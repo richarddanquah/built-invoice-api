@@ -28,7 +28,7 @@ Route::post('/login', [AuthController::class,'login']);
 Route::group(['middleware' => ['auth:sanctum']],function() {
     Route::resource('customers', CustomerController::class);
     Route::resource('items', ItemController::class);
-    Route::resource('item_stocks', ItemStockController::class);
+    Route::post('item_stocks', [ItemStockController::class,'store']);
     Route::resource('invoices', InvoiceController::class);
     Route::post('/logout', [AuthController::class,'logout']);
 });
