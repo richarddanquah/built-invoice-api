@@ -24,7 +24,7 @@ class CustomerController extends Controller
             $per_page = 50;
         }
 
-        $customerQuery = Customer::orderBy('id', 'DESC')->select('id', 'fullname', 'phonenumber', 'email', 'address', 'city', 'postal_code')
+        $customerQuery = Customer::with(['user'])->orderBy('id', 'DESC')->select('id', 'fullname', 'phonenumber', 'email', 'address', 'city', 'postal_code','user_id')
             ->where(function ($query) use ($request) {
                 $query->where('fullname', 'like', '%' . $request->input('searchtext') . '%')
                     ->orWhere('phonenumber', 'like', '%' . $request->input('searchtext') . '%')
@@ -56,7 +56,7 @@ class CustomerController extends Controller
             'postal_code' => 'required|string'
         ]);
  
-    
+        $user = auth()->user();
         $data = Customer::create([
          'fullname'=>  $input['fullname'],
          'phonenumber'=>  $input['phonenumber'],
@@ -64,6 +64,7 @@ class CustomerController extends Controller
          'email'=>  $input['email'],
          'city'=>  $input['city'],
          'postal_code'=>  $input['postal_code'],
+         'user_id'=> $user->id
         ]);
 
         return response()->json([
@@ -97,12 +98,12 @@ class CustomerController extends Controller
     public function update(Request $request, $id)
     {
         $input = $request->validate([
-            'fullname' => 'required',
-            'phonenumber' => 'required',
-            'address' => 'required',
-            'email' => 'required',
-            'city' => 'required',
-            'postal_code' => 'required'
+            'fullname' => 'required|string',
+            'phonenumber' => 'required|string',
+            'address' => 'required|string',
+            'email' => 'required|string',
+            'city' => 'required|string',
+            'postal_code' => 'required|string'
         ]);
 
         $customer = Customer::find($id);

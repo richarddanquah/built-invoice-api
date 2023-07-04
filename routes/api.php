@@ -19,11 +19,15 @@ use Illuminate\Support\Facades\Route;
 
 // public routes
 Route::post('/register', [AuthController::class,'register']);
+Route::post('/login', [AuthController::class,'login']);
 
 // protected routes
 Route::group(['middleware' => ['auth:sanctum']],function() {
     Route::resource('customers', CustomerController::class);
+    Route::post('/logout', [AuthController::class,'logout']);
 });
+
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

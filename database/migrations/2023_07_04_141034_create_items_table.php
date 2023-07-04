@@ -20,6 +20,7 @@ class CreateItemsTable extends Migration
             $table->float('price');
             $table->string('description');
             $table->integer('stock')->default(0);
+            $table->integer('user_id');
             $table->timestamps();
         });
     }

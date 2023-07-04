@@ -10,7 +10,7 @@ class Item extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name','image_url','price','description','stock'
+        'name','image_url','price','description','stock','user_id'
      ];
 
     public function item_stocks(){
@@ -19,6 +19,10 @@ class Item extends Model
 
     public function invoices(){
         return $this->belongsToMany(Invoice::class, 'invoice_items', 'item_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 
 }
