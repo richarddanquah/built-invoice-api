@@ -47,17 +47,16 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
     
-        $request->validate([
-            'fullname' => 'required',
-            'phonenumber' => 'unique:customers|required',
-            'address' => 'required',
-            'email' => 'unique:customers|required',
-            'city' => 'required',
-            'postal_code' => 'required'
+        $input = $request->validate([
+            'fullname' => 'required|string',
+            'phonenumber' => 'required|string|unique:customers,phonenumber',
+            'address' => 'required|string',
+            'email' => 'required|string|unique:customers,email',
+            'city' => 'required|string',
+            'postal_code' => 'required|string'
         ]);
  
-        $input = $request->all();
-
+    
         $data = Customer::create([
          'fullname'=>  $input['fullname'],
          'phonenumber'=>  $input['phonenumber'],
@@ -97,7 +96,7 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $input = $request->validate([
             'fullname' => 'required',
             'phonenumber' => 'required',
             'address' => 'required',
@@ -107,8 +106,6 @@ class CustomerController extends Controller
         ]);
 
         $customer = Customer::find($id);
-
-        $input = $request->all();
 
         $customer->update([
          'fullname'=> $input['fullname'],
