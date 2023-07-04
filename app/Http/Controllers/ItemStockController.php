@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
+use App\Models\ItemStock;
 use Illuminate\Http\Request;
 
 class ItemStockController extends Controller
@@ -24,7 +26,34 @@ class ItemStockController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->validate([
+            'item_id' => 'required|integer',
+            'stock_in' => 'required|integer'
+        ]);
+
+        $user = auth()->user();
+        $data = ItemStock::create([
+            'item_id'=>  $input['item_id'],
+            'stock_in'=>  $input['stock_in'],
+            'user_id'=> $user->id
+           ]);
+
+
+           $stock = Item::find($input['item_id']);
+           $existing_stock = $stock['stock'];
+           $updated_stock = $existing_stock + $input['stock_in'];
+           $stock->update([
+            'stock'=>  $updated_stock
+           ]);
+
+
+
+           return response()->json([
+            'success' => true,
+            'message' => 'Item Stock Created Successfully!',
+            'data' => $data,
+        ], 200);
+        
     }
 
     /**

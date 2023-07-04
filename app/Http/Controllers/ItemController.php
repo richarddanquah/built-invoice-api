@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -11,9 +12,26 @@ class ItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $per_page = 50;
+        if ($request->input('per_page')) {
+            $per_page = $request->input('per_page');
+        } else {
+            $per_page = 50;
+        }
+
+        $itemQuery = Item::with(['user'])->orderBy('id', 'DESC')->select('id', 'name', 'image_url', 'price', 'description', 'stock','user_id')
+            ->where(function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->input('searchtext') . '%');  
+            })->paginate($per_page);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Success',
+            'data' => $itemQuery,
+        ], 200);
+        
     }
 
     /**
@@ -24,7 +42,29 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->validate([
+            'name' => 'required|string|unique:items,name',
+            'price' => 'required|integer',
+            'description' => 'required|string',
+            'image_url' => 'required|string',
+        ]);
+        $user = auth()->user();
+
+        $data = Item::create([
+            'name'=>  $input['name'],
+            'price'=>  $input['price'],
+            'description'=>  $input['description'],
+            'image_url'=>  $input['image_url'],
+            'user_id'=> $user->id
+           ]);
+   
+           return response()->json([
+               'success' => true,
+               'message' => 'Item Created Successfully!',
+               'data' => $data,
+           ], 200);
+
+
     }
 
     /**
@@ -35,7 +75,9 @@ class ItemController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Item::find($id);
+
+        return response()->json(['success' => true, 'message' => 'Item!', 'data' => $data]);
     }
 
     /**
@@ -47,7 +89,29 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $input = $request->validate([
+            'name' => 'required|string',
+            'price' => 'required|integer',
+            'description' => 'required|string',
+            'image_url' => 'required|string',
+        ]);
+
+        $user = auth()->user();
+
+        $item = Item::find($id);
+
+        $item->update([
+            'name'=>  $input['name'],
+            'price'=>  $input['price'],
+            'description'=>  $input['description'],
+            'image_url'=>  $input['image_url'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Item Updated Successfully',
+            'data' => $item
+        ], 200);
     }
 
     /**

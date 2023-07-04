@@ -18,6 +18,7 @@ class CreateItemStocksTable extends Migration
             $table->integer('item_id');
             $table->integer('stock_in')->nullable();
             $table->integer('stock_out')->nullable();
+            $table->integer('user_id');
             $table->timestamps();
         });
     }
